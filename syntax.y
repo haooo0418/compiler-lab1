@@ -9,6 +9,9 @@ extern TreeNode *root;
 extern int error_num;
 extern int yylineno;
 
+
+
+
 static int pending_syntax_error = 0;
 static void yyerror_missing(const char *what, int lineno) {
   //  pending_syntax_error = 0;

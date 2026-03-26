@@ -20,6 +20,9 @@ int main(int argc, char *argv[]) {
     }
     yyrestart(f);
     yyparse();
+
+
+    
     /* 若无错误，则先序遍历打印语法树 */
     if (error_num == 0 && root != NULL) {
         printTree(root, 0);
