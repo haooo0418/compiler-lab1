@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "treenode.h"
 extern int yylex();
 extern int yyparse();
@@ -10,20 +11,24 @@ extern int yylineno;
 
 static int pending_syntax_error = 0;
 static void yyerror_missing(const char *what, int lineno) {
-    pending_syntax_error = 0;
+  //  pending_syntax_error = 0;
 
     fprintf(stderr, "Error type B at Line %d: Missing \"%s\".\n", lineno, what);
     error_num++;
 }
 void yyerror(const char *msg) {
-    if (msg && strcmp(msg, "syntax error") == 0) {
-        pending_syntax_error = 1;
-        return;
-    }
+   // if (msg && strcmp(msg, "syntax error") == 0) {
+  //      pending_syntax_error = 1;
+ //       return;
+  //  }
 
-    /* 其它错误照常打印 */
-    pending_syntax_error = 0;
-    fprintf(stderr, "Error type B at Line %d: %s\n", yylineno, msg ? msg : "syntax error");
+  //  /* 其它错误照常打印 */
+  //  pending_syntax_error = 0;
+   // fprintf(stderr, "Error type B at Line %d: %s\n", yylineno, msg ? msg : "syntax error");
+   // error_num++;
+
+    (void)msg;
+    fprintf(stderr, "Error type B at Line %d: Syntax error.\n", yylineno);
     error_num++;
 }
 %}
