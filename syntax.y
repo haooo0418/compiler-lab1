@@ -8,23 +8,16 @@ extern TreeNode *root;
 extern int error_num;
 extern int yylineno;
 
-static int pending_syntax_error = 0;
 static void yyerror_missing(const char *what, int lineno) {
-    pending_syntax_error = 0;
-
     fprintf(stderr, "Error type B at Line %d: Missing \"%s\".\n", lineno, what);
     error_num++;
 }
 void yyerror(const char *msg) {
-    if (msg && strcmp(msg, "syntax error") == 0) {
-        pending_syntax_error = 1;
-        return;
-    }
-
-    /* 其它错误照常打印 */
-    pending_syntax_error = 0;
-    fprintf(stderr, "Error type B at Line %d: %s\n", yylineno, msg ? msg : "syntax error");
-    error_num++;
+    /* Suppress all generic bison "syntax error" messages regardless of
+       capitalization or trailing punctuation (varies across bison versions).
+       Specific diagnostics are emitted by yyerror_missing() in the
+       error-recovery rules below. */
+    (void)msg;
 }
 %}
 
