@@ -8,16 +8,21 @@ extern TreeNode *root;
 extern int error_num;
 extern int yylineno;
 
+/* Line number of the most recently detected, not-yet-resolved parser error.
+   Cleared by yyerror_missing() when a specific recovery rule handles it, or
+   printed as a generic "Syntax error" by generic recovery rules / main(). */
+int pending_error_line = 0;
+
 static void yyerror_missing(const char *what, int lineno) {
+    pending_error_line = 0;  /* resolved by a specific rule */
     fprintf(stderr, "Error type B at Line %d: Missing \"%s\".\n", lineno, what);
     error_num++;
 }
 void yyerror(const char *msg) {
-    /* Suppress all generic bison "syntax error" messages regardless of
-       capitalization or trailing punctuation (varies across bison versions).
-       Specific diagnostics are emitted by yyerror_missing() in the
-       error-recovery rules below. */
     (void)msg;
+    /* Save the error location; the recovery rule (or main) will decide
+       whether to print a specific message or the generic "Syntax error". */
+    pending_error_line = yylineno;
 }
 %}
 
@@ -267,6 +272,18 @@ Def
         insertChild(p, $3);
         $$ = p;
       }
+    | Specifier error SEMI {
+        /* e.g. "float i = 1.05e;" — lexer splits "1.05e" into FLOAT + ID */
+        if (pending_error_line > 0) {
+            fprintf(stderr, "Error type B at Line %d: Syntax error\n", pending_error_line);
+            error_num++;
+            pending_error_line = 0;
+        }
+        yyerrok;
+        TreeNode *p = createTreeNode("Def", $1->lineno, "");
+        insertChild(p, $1);
+        $$ = p;
+      }
     ;
 
 DecList
@@ -295,6 +312,11 @@ StmtList
         $$ =  NULL;
       }
        | error SEMI StmtList {
+        if (pending_error_line > 0) {
+            fprintf(stderr, "Error type B at Line %d: Syntax error\n", pending_error_line);
+            error_num++;
+            pending_error_line = 0;
+        }
         yyerrok;
         $$ = $3;  /* 不构造空 StmtList/Stmt 节点，避免输出垃圾节点 */
       }
