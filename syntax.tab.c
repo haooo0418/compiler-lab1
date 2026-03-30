@@ -1784,7 +1784,7 @@ yyreduce:
   case 40: /* Stmt: IF LP Exp RP Stmt ELSE error Stmt  */
 #line 354 "syntax.y"
                                            {
-        yyerror_missing(";", (yylsp[-2]).first_line); /* @6 对应 ELSE 的位置 */
+        yyerror_missing(";", (yyvsp[-2].node)->lineno); /* $6 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", (yyvsp[-7].node)->lineno, "");
@@ -1819,7 +1819,7 @@ yyreduce:
   case 42: /* Stmt: IF LP Exp RP Stmt error ELSE Stmt  */
 #line 379 "syntax.y"
                                            {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", (yyvsp[-1].node)->lineno); /* $7 is the ELSE token */
         yyerrok;
        
 
@@ -1839,7 +1839,7 @@ yyreduce:
   case 43: /* Stmt: IF LP Exp RP Exp error ELSE Stmt  */
 #line 394 "syntax.y"
                                          {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", (yyvsp[-1].node)->lineno); /* $7 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", (yyvsp[-7].node)->lineno, "");
@@ -2038,7 +2038,7 @@ yyreduce:
   case 61: /* Exp: Exp LB error RB  */
 #line 511 "syntax.y"
                       {
-        yyerror_missing("]", yylineno);
+        yyerror_missing("]", (yyvsp[-2].node)->lineno); /* $2 is the LB token */
         /* 错误恢复：丢弃当前 lookahead，继续 */
         yyerrok;
       
@@ -2056,7 +2056,7 @@ yyreduce:
   case 62: /* Exp: Exp LB error SEMI  */
 #line 524 "syntax.y"
                            {
-        yyerror_missing("]", yylineno);
+        yyerror_missing("]", (yyvsp[-2].node)->lineno); /* $2 is the LB token */
         yyerrok;
 
         /* 这里消耗掉 SEMI，相当于跳过这条错误语句的剩余部分 */

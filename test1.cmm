@@ -1,9 +1,9 @@
-struct Complex
- {
-    float real,image;
-};
-int main()
-{
-    struct Complex x;
-    y.image=3.5;
+int a[10][10];
+int main(){
+    int k;
+    int i;
+    k = a[5,3];
+    if (k>0) k=0 else k=1;
+    k = a[5,3];
+    if (k>0) k=0 else k=1;
 }

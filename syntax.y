@@ -352,7 +352,7 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt ELSE error Stmt {
-        yyerror_missing(";", @6.first_line); /* @6 对应 ELSE 的位置 */
+        yyerror_missing(";", $6->lineno); /* $6 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
@@ -377,7 +377,7 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt error ELSE Stmt {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
         yyerrok;
        
 
@@ -392,7 +392,7 @@ Stmt
         $$ = p;
       }
       | IF LP Exp RP Exp error ELSE Stmt {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
@@ -509,7 +509,7 @@ Exp
   
     
     | Exp LB error RB {
-        yyerror_missing("]", yylineno);
+        yyerror_missing("]", $2->lineno); /* $2 is the LB token */
         /* 错误恢复：丢弃当前 lookahead，继续 */
         yyerrok;
       
@@ -522,7 +522,7 @@ Exp
         $$ = p;
       }
        | Exp LB error SEMI {
-        yyerror_missing("]", yylineno);
+        yyerror_missing("]", $2->lineno); /* $2 is the LB token */
         yyerrok;
 
         /* 这里消耗掉 SEMI，相当于跳过这条错误语句的剩余部分 */
