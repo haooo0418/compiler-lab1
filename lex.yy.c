@@ -341,6 +341,9 @@ void yyfree ( void *  );
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
+
+#define yywrap() (/*CONSTCOND*/1)
+#define YY_SKIP_YYWRAP
 typedef flex_uint8_t YY_CHAR;
 
 FILE *yyin = NULL, *yyout = NULL;
@@ -530,8 +533,8 @@ char *yytext;
 #include <string.h>
 #include <stdlib.h>
 extern int error_num;
-#line 534 "lex.yy.c"
-#line 535 "lex.yy.c"
+#line 537 "lex.yy.c"
+#line 538 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -751,7 +754,7 @@ YY_DECL
 #line 48 "lexical.l"
 
 
-#line 755 "lex.yy.c"
+#line 758 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1005,7 +1008,7 @@ YY_RULE_SETUP
 #line 104 "lexical.l"
 ECHO;
 	YY_BREAK
-#line 1009 "lex.yy.c"
+#line 1012 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

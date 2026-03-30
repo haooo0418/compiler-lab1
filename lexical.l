@@ -1,5 +1,5 @@
 
-%option yylineno
+%option yylineno noyywrap
 %{
 
 #include "treenode.h"

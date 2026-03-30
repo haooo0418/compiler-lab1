@@ -10,12 +10,17 @@ extern int error_num;
 extern int yylineno;
 
 
+int pending_error_line = 0;
+int missing_line = 0;
+//static int pending_syntax_error = 0;
 
 
-static int pending_syntax_error = 0;
+
 static void yyerror_missing(const char *what, int lineno) {
-  //  pending_syntax_error = 0;
-
+  
+       missing_line = lineno;
+ pending_error_line = 0;
+ 
     fprintf(stderr, "Error type B at Line %d: Missing \"%s\".\n", lineno, what);
     error_num++;
 }
@@ -31,8 +36,9 @@ void yyerror(const char *msg) {
    // error_num++;
 
     (void)msg;
-    fprintf(stderr, "Error type B at Line %d: Syntax error.\n", yylineno);
-    error_num++;
+    //fprintf(stderr, "Error type B at Line %d: Syntax error.\n", yylineno);
+    //error_num++;
+    pending_error_line = yylineno;
 }
 %}
 
@@ -282,6 +288,25 @@ Def
         insertChild(p, $3);
         $$ = p;
       }
+       | Specifier DecList error {
+        /* 行号用 DecList 的行号（即缺分号的那一行） */
+        yyerror_missing(";", $2->lineno);
+        yyerrok;
+
+        /* 为了构树稳定，这里仍构造 Def（不插入 SEMI，因为缺失） */
+        TreeNode *p = createTreeNode("Def", $1->lineno, "");
+        insertChild(p, $1);
+        insertChild(p, $2);
+        $$ = p;
+      }
+       | Specifier error SEMI {
+        /* e.g. "float i = 1.05e;" — lexer splits "1.05e" into FLOAT + ID */
+       
+        yyerrok;
+        TreeNode *p = createTreeNode("Def", $1->lineno, "");
+        insertChild(p, $1);
+        $$ = p;
+      }
     ;
 
 DecList
@@ -310,8 +335,14 @@ StmtList
         $$ =  NULL;
       }
        | error SEMI StmtList {
+       
         yyerrok;
         $$ = $3;  /* 不构造空 StmtList/Stmt 节点，避免输出垃圾节点 */
+      }
+       | Def error {
+        yyerror_missing(";", $1->lineno); /* 行号就是 int c=2 那一行（第8行） */
+        yyerrok;
+        $$ = NULL; /* 不制造额外节点 */
       }
     ;
 
@@ -502,7 +533,7 @@ Exp
   
     
     | Exp LB error RB {
-        yyerror_missing("]", yylineno);
+        yyerror_missing("]",  @4.first_line);
         /* 错误恢复：丢弃当前 lookahead，继续 */
         yyerrok;
       
@@ -514,17 +545,7 @@ Exp
         insertChild(p, $4);
         $$ = p;
       }
-       | Exp LB error SEMI {
-        yyerror_missing("]", yylineno);
-        yyerrok;
-
-        /* 这里消耗掉 SEMI，相当于跳过这条错误语句的剩余部分 */
-        TreeNode *p = createTreeNode("Exp", $1->lineno, "");
-        insertChild(p, $1);
-        insertChild(p, $2);
-        insertChild(p, $4); /* SEMI 作为同步点 */
-        $$ = p;
-      }
+       
   
     ;
 

@@ -7,6 +7,10 @@ extern void yyrestart(FILE *);
 extern int yylineno;
 int error_num = 0;     /* 放在这里作为唯一的定义 */
 TreeNode *root = NULL; /* 放在这里作为唯一的定义 */
+extern int pending_error_line;
+extern int missing_line;
+
+
 
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
@@ -21,7 +25,13 @@ int main(int argc, char *argv[]) {
     yyrestart(f);
     yyparse();
 
-
+   if (pending_error_line > 0) {
+        if (pending_error_line != missing_line) {
+            fprintf(stderr, "Error type B at Line %d: Syntax error.\n", pending_error_line);
+            error_num++;
+        }
+        pending_error_line = 0;
+    }
     
     /* 若无错误，则先序遍历打印语法树 */
     if (error_num == 0 && root != NULL) {
