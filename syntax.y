@@ -329,6 +329,18 @@ Stmt
         insertChild(p, $2);
         $$ = p;
       }
+    | Exp error {
+        /* Missing ";" before "}" or other block-close delimiter.
+           Only report if yyerror was called (pending_error_line > 0); the
+           outer IF-ELSE rule will report if the else-branch cleared it. */
+        if (pending_error_line > 0) {
+            yyerror_missing(";", $1->lineno);
+        }
+        yyerrok;
+        TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
+        insertChild(p, $1);
+        $$ = p;
+      }
     | CompSt {
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
         insertChild(p, $1);
@@ -377,7 +389,9 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt error ELSE Stmt {
-        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        if (pending_error_line > 0) {
+            yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        }
         yyerrok;
        
 
@@ -392,7 +406,9 @@ Stmt
         $$ = p;
       }
       | IF LP Exp RP Exp error ELSE Stmt {
-        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        if (pending_error_line > 0) {
+            yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        }
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
