@@ -1,43 +1,30 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "treenode.h"
 extern int yylex();
 extern int yyparse();
 extern TreeNode *root;
 extern int error_num;
 extern int yylineno;
-
-
 int pending_error_line = 0;
 int missing_line = 0;
-//static int pending_syntax_error = 0;
 
+/* Line number of the most recently detected, not-yet-resolved parser error.
+   Cleared by yyerror_missing() when a specific recovery rule handles it, or
+   printed as a generic "Syntax error" by generic recovery rules / main(). */
 
 
 static void yyerror_missing(const char *what, int lineno) {
-  
-       missing_line = lineno;
- pending_error_line = 0;
- 
+    pending_error_line = 0;  /* resolved by a specific rule */
+        missing_line = lineno;
     fprintf(stderr, "Error type B at Line %d: Missing \"%s\".\n", lineno, what);
     error_num++;
 }
 void yyerror(const char *msg) {
-   // if (msg && strcmp(msg, "syntax error") == 0) {
-  //      pending_syntax_error = 1;
- //       return;
-  //  }
-
-  //  /* 其它错误照常打印 */
-  //  pending_syntax_error = 0;
-   // fprintf(stderr, "Error type B at Line %d: %s\n", yylineno, msg ? msg : "syntax error");
-   // error_num++;
-
     (void)msg;
-    //fprintf(stderr, "Error type B at Line %d: Syntax error.\n", yylineno);
-    //error_num++;
+    /* Save the error location; the recovery rule (or main) will decide
+       whether to print a specific message or the generic "Syntax error". */
     pending_error_line = yylineno;
 }
 %}
@@ -288,20 +275,13 @@ Def
         insertChild(p, $3);
         $$ = p;
       }
-       | Specifier DecList error {
-        /* 行号用 DecList 的行号（即缺分号的那一行） */
-        yyerror_missing(";", $2->lineno);
-        yyerrok;
-
-        /* 为了构树稳定，这里仍构造 Def（不插入 SEMI，因为缺失） */
-        TreeNode *p = createTreeNode("Def", $1->lineno, "");
-        insertChild(p, $1);
-        insertChild(p, $2);
-        $$ = p;
-      }
-       | Specifier error SEMI {
+    | Specifier error SEMI {
         /* e.g. "float i = 1.05e;" — lexer splits "1.05e" into FLOAT + ID */
-       
+        if (pending_error_line > 0) {
+            fprintf(stderr, "Error type B at Line %d: Syntax error\n", pending_error_line);
+            error_num++;
+            pending_error_line = 0;
+        }
         yyerrok;
         TreeNode *p = createTreeNode("Def", $1->lineno, "");
         insertChild(p, $1);
@@ -335,14 +315,13 @@ StmtList
         $$ =  NULL;
       }
        | error SEMI StmtList {
-       
+        if (pending_error_line > 0) {
+            fprintf(stderr, "Error type B at Line %d: Syntax error\n", pending_error_line);
+            error_num++;
+            pending_error_line = 0;
+        }
         yyerrok;
         $$ = $3;  /* 不构造空 StmtList/Stmt 节点，避免输出垃圾节点 */
-      }
-       | Def error {
-        yyerror_missing(";", $1->lineno); /* 行号就是 int c=2 那一行（第8行） */
-        yyerrok;
-        $$ = NULL; /* 不制造额外节点 */
       }
     ;
 
@@ -376,7 +355,7 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt ELSE error Stmt {
-        yyerror_missing(";", @6.first_line); /* @6 对应 ELSE 的位置 */
+        yyerror_missing(";", $6->lineno); /* $6 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
@@ -401,7 +380,7 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt error ELSE Stmt {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
         yyerrok;
        
 
@@ -416,7 +395,7 @@ Stmt
         $$ = p;
       }
       | IF LP Exp RP Exp error ELSE Stmt {
-        yyerror_missing(";", yylineno);
+        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
@@ -533,7 +512,7 @@ Exp
   
     
     | Exp LB error RB {
-        yyerror_missing("]",  @4.first_line);
+        yyerror_missing("]", $2->lineno); /* $2 is the LB token */
         /* 错误恢复：丢弃当前 lookahead，继续 */
         yyerrok;
       
@@ -545,7 +524,17 @@ Exp
         insertChild(p, $4);
         $$ = p;
       }
-       
+       | Exp LB error SEMI {
+        yyerror_missing("]", $2->lineno); /* $2 is the LB token */
+        yyerrok;
+
+        /* 这里消耗掉 SEMI，相当于跳过这条错误语句的剩余部分 */
+        TreeNode *p = createTreeNode("Exp", $1->lineno, "");
+        insertChild(p, $1);
+        insertChild(p, $2);
+        insertChild(p, $4); /* SEMI 作为同步点 */
+        $$ = p;
+      }
   
     ;
 
@@ -565,4 +554,3 @@ Args
     ;
 
 %%
-

@@ -85,7 +85,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 45 "syntax.y"
+#line 32 "syntax.y"
 
     TreeNode *node;
 
