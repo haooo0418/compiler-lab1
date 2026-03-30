@@ -84,7 +84,7 @@ void printTree(TreeNode *p, int tab) {
         /* 非叶节点 */
         printf("%s (%d)\n", p->name, p->lineno);
         for (int i = 0; i < p->num; i++) {
-            printTree(p->children[i], tab+1);
+            printTree(p->children[i], tab+2);
         }
     }
 }

@@ -42,6 +42,7 @@ OCTONARY    0[0-7]+
 INT         ([1-9][0-9]*)|0
 
 FLOAT       ([0-9]+\.[0-9]*|\.[0-9]+)([Ee][+-]?[0-9]+)?
+BAD_FLOAT   ([0-9]+\.[0-9]*|\.[0-9]+)[Ee][+-]?
 ID          [_a-zA-Z][_a-zA-Z0-9]*
 WHITESPACE  [ \t\r] 
 
@@ -91,7 +92,12 @@ WHITESPACE  [ \t\r]
                 }
 {INT}          { yylval.node = createTreeNode("INT", yylineno, yytext); return INT; }
 {FLOAT}        {
-                  
+                  yylval.node = createTreeNode("FLOAT", yylineno, yytext);
+                  return FLOAT;
+                }
+{BAD_FLOAT}    {
+                  error_num++;
+                  fprintf(stderr, "Error type A at Line %d: Illegal floating point number \"%s\".\n", yylineno, yytext);
                   yylval.node = createTreeNode("FLOAT", yylineno, yytext);
                   return FLOAT;
                 }

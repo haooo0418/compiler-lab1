@@ -373,8 +373,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 33
-#define YY_END_OF_BUFFER 34
+#define YY_NUM_RULES 34
+#define YY_END_OF_BUFFER 35
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -384,13 +384,13 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[75] =
     {   0,
-        0,    0,   34,   32,    2,    1,   14,   32,   15,   16,
+        0,    0,   35,   33,    2,    1,   14,   33,   15,   16,
         9,    7,    4,    8,   13,   10,   30,   30,    3,    6,
         5,    6,   27,   17,   18,   27,   27,   27,   27,   27,
-       27,   19,   32,   20,    2,    6,   11,   31,   31,   29,
+       27,   19,   33,   20,    2,    6,   11,   31,   31,   29,
         0,    0,   30,   27,   27,   27,   23,   27,   27,   27,
-       27,   12,    0,   31,   28,   27,   27,   26,   27,   27,
-       27,    0,   31,   24,   27,   27,   27,   27,   27,   27,
+       27,   12,   32,   31,   28,   27,   27,   26,   27,   27,
+       27,   32,   31,   24,   27,   27,   27,   27,   27,   27,
        25,   22,   21,    0
     } ;
 
@@ -506,10 +506,10 @@ static const flex_int16_t yy_chk[174] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[34] =
+static const flex_int32_t yy_rule_can_match_eol[35] =
     {   0,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -751,7 +751,7 @@ YY_DECL
 		}
 
 	{
-#line 48 "lexical.l"
+#line 49 "lexical.l"
 
 
 #line 758 "lex.yy.c"
@@ -824,142 +824,142 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 50 "lexical.l"
+#line 51 "lexical.l"
 { }  
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 51 "lexical.l"
+#line 52 "lexical.l"
 { /* 跳过空格 */ }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 52 "lexical.l"
+#line 53 "lexical.l"
 { yylval.node = createTreeNode("SEMI", yylineno, ""); return SEMI; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 53 "lexical.l"
+#line 54 "lexical.l"
 { yylval.node = createTreeNode("COMMA", yylineno, ""); return COMMA; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 54 "lexical.l"
+#line 55 "lexical.l"
 { yylval.node = createTreeNode("ASSIGNOP", yylineno, ""); return ASSIGNOP; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 55 "lexical.l"
+#line 56 "lexical.l"
 { yylval.node = createTreeNode("RELOP", yylineno, yytext); return RELOP; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 56 "lexical.l"
+#line 57 "lexical.l"
 { yylval.node = createTreeNode("PLUS", yylineno, ""); return PLUS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 57 "lexical.l"
+#line 58 "lexical.l"
 { yylval.node = createTreeNode("MINUS", yylineno, ""); return MINUS; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 58 "lexical.l"
+#line 59 "lexical.l"
 { yylval.node = createTreeNode("STAR", yylineno, ""); return STAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 59 "lexical.l"
+#line 60 "lexical.l"
 { yylval.node = createTreeNode("DIV", yylineno, ""); return DIV; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 60 "lexical.l"
+#line 61 "lexical.l"
 { yylval.node = createTreeNode("AND", yylineno, ""); return AND; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 61 "lexical.l"
+#line 62 "lexical.l"
 { yylval.node = createTreeNode("OR", yylineno, ""); return OR; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 62 "lexical.l"
+#line 63 "lexical.l"
 { yylval.node = createTreeNode("DOT", yylineno, ""); return DOT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 63 "lexical.l"
+#line 64 "lexical.l"
 { yylval.node = createTreeNode("NOT", yylineno, ""); return NOT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 65 "lexical.l"
+#line 66 "lexical.l"
 { yylval.node = createTreeNode("LP", yylineno, ""); return LP; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 66 "lexical.l"
+#line 67 "lexical.l"
 { yylval.node = createTreeNode("RP", yylineno, ""); return RP; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 67 "lexical.l"
+#line 68 "lexical.l"
 { yylval.node = createTreeNode("LB", yylineno, ""); return LB; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 68 "lexical.l"
+#line 69 "lexical.l"
 { yylval.node = createTreeNode("RB", yylineno, ""); return RB; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 69 "lexical.l"
+#line 70 "lexical.l"
 { yylval.node = createTreeNode("LC", yylineno, ""); return LC; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 70 "lexical.l"
+#line 71 "lexical.l"
 { yylval.node = createTreeNode("RC", yylineno, ""); return RC; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 71 "lexical.l"
+#line 72 "lexical.l"
 { yylval.node = createTreeNode("STRUCT", yylineno, ""); return STRUCT; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 72 "lexical.l"
+#line 73 "lexical.l"
 { yylval.node = createTreeNode("RETURN", yylineno, ""); return RETURN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 73 "lexical.l"
+#line 74 "lexical.l"
 { yylval.node = createTreeNode("IF", yylineno, ""); return IF; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 74 "lexical.l"
+#line 75 "lexical.l"
 { yylval.node = createTreeNode("ELSE", yylineno, ""); return ELSE; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 75 "lexical.l"
+#line 76 "lexical.l"
 { yylval.node = createTreeNode("WHILE", yylineno, ""); return WHILE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 76 "lexical.l"
+#line 77 "lexical.l"
 { yylval.node = createTreeNode("TYPE", yylineno, yytext); return TYPE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 77 "lexical.l"
+#line 78 "lexical.l"
 { yylval.node = createTreeNode("ID", yylineno, yytext); return ID; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 78 "lexical.l"
+#line 79 "lexical.l"
 {
                  
                   char val[50]; long tmp = strtol(yytext, NULL, 16);
@@ -970,7 +970,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 85 "lexical.l"
+#line 86 "lexical.l"
 {
                   
                   char val[50]; long tmp = strtol(yytext, NULL, 8);
@@ -981,14 +981,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 92 "lexical.l"
+#line 93 "lexical.l"
 { yylval.node = createTreeNode("INT", yylineno, yytext); return INT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 93 "lexical.l"
+#line 94 "lexical.l"
 {
-                  
                   yylval.node = createTreeNode("FLOAT", yylineno, yytext);
                   return FLOAT;
                 }
@@ -997,18 +996,28 @@ case 32:
 YY_RULE_SETUP
 #line 98 "lexical.l"
 {
+                  error_num++;
+                  fprintf(stderr, "Error type A at Line %d: Illegal floating point number \"%s\".\n", yylineno, yytext);
+                  yylval.node = createTreeNode("FLOAT", yylineno, yytext);
+                  return FLOAT;
+                }
+	YY_BREAK
+case 33:
+YY_RULE_SETUP
+#line 104 "lexical.l"
+{
                  
                   error_num++;
                   
                   fprintf(stderr, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);
                 }
 	YY_BREAK
-case 33:
+case 34:
 YY_RULE_SETUP
-#line 104 "lexical.l"
+#line 110 "lexical.l"
 ECHO;
 	YY_BREAK
-#line 1012 "lex.yy.c"
+#line 1021 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2025,7 +2034,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 104 "lexical.l"
+#line 110 "lexical.l"
 
 
 
