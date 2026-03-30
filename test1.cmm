@@ -2,8 +2,6 @@ int main()
  {
  float a[10][2];
  int i;
- a[5,3]=1.5;
-if (i == 0) i = 1 else i = 0;
- a[7,3]=1.5;
- int c=2
+ int j=0.2.3;
+ 
 }

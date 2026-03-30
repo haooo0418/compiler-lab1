@@ -194,6 +194,7 @@ CompSt
         insertChild(p, $4);
         $$ = p;
       }
+      
     ;
 
 FunDec
@@ -323,6 +324,7 @@ StmtList
         yyerrok;
         $$ = $3;  /* 不构造空 StmtList/Stmt 节点，避免输出垃圾节点 */
       }
+       
     ;
 
 Stmt
@@ -330,6 +332,16 @@ Stmt
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
         insertChild(p, $1);
         insertChild(p, $2);
+        $$ = p;
+      }
+       | Exp error {
+        /* Missing ";" before "}" or other block-close delimiter */
+          if (pending_error_line > 0) {
+            yyerror_missing(";", $1->lineno);
+        }
+        yyerrok;
+        TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
+        insertChild(p, $1);
         $$ = p;
       }
     | CompSt {
@@ -380,7 +392,9 @@ Stmt
         $$ = p;
       }
        | IF LP Exp RP Stmt error ELSE Stmt {
-        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        if (pending_error_line > 0) {
+            yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        }
         yyerrok;
        
 
@@ -395,7 +409,9 @@ Stmt
         $$ = p;
       }
       | IF LP Exp RP Exp error ELSE Stmt {
-        yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+       if (pending_error_line > 0) {
+            yyerror_missing(";", $7->lineno); /* $7 is the ELSE token */
+        }
         yyerrok;
 
         TreeNode *p = createTreeNode("Stmt", $1->lineno, "");
